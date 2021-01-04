@@ -16,3 +16,22 @@
 ## Formatter / Linter
 [Formatter](https://github.com/Koihik/LuaFormatter)
 [Linter](https://github.com/mpeterv/luacheck)
+
+## Idea
+
+- Abilites
+- Invisibility for 15 secs
+- glue seeker for 10 secs
+- blink for short distance
+- prop-Verwandlung for 20 secs
+- zombie-attack
+- smoke, flash
+- infinite sprint
+- fake person -> puff in konfetti
+
+- Seeker Abilities
+- Uncover area in meters (show in UI how far it can reach)
+- Grappling hook
+- Speed boost (the more seekers are close the faster they become)
+- Ren, if hiders move in a certain distance, the seeker will be notified that someone is there
+- stun-bat primary weapon of the first seeker
