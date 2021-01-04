@@ -42,6 +42,10 @@ function goInvisible(ply, distance)
 	end
 end
 
+function goProp(ply, distance)
+	ply:PrintMessage(HUD_PRINTTALK, "Foo")
+end
+
 function setInvisibleTbl(Players)
 	for i = 1, #Players do
 		invisibleTbl[i] = false
@@ -81,16 +85,26 @@ end
 hook.Add( "KeyPress", "keypressForAction", function( ply, key )
 	if has_enableabilities == 0 then return end -- disable abilities
 
-	--partner = getPartner(ply, ACTIVEPARTNERS)
-	if key == IN_USE and partner then
-		-- Distance Calc
-		playerPos = ply:GetPos()
+	-- use a nice switch-case
+	local switch = {
+		[IN_RELOAD] = function()
+			goProp(ply)
+		end,
+		[IN_USE] = function()
+			-- Distance Calc
+			playerPos = ply:GetPos()
+			partner = getPartner(ply, ACTIVEPARTNERS)
+			if !partner then return end
 
-		if !partner then return end
+			partnerPos = partner:GetPos()
+			distance = math.Distance( playerPos.x, playerPos.y, partnerPos.x, partnerPos.y )
 
-		partnerPos = partner:GetPos()
-		distance = math.Distance( playerPos.x, playerPos.y, partnerPos.x, partnerPos.y )
-
-		executeAbility(ply, distance)
+			executeAbility(ply, distance)
+		end,
+	}
+	
+	local action = switch[key]
+	if(action) then
+		action()
 	end
 end)
