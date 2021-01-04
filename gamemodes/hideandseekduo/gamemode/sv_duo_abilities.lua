@@ -6,12 +6,12 @@ local enableabilties = CreateConVar("has_enableabilities",
 				"Allows ablities")
 
 
-function goInvisible(ply, distance)
+function GoInvisible(ply, distance)
 	if distance < 110 then
-		inv = Color(0, 0, 0, 3)
-		plyColor = ply:GetColor()
+		local inv = Color(0, 0, 0, 3)
+		local plyColor = ply:GetColor()
 		for i = 1, #invisibleTbl do
-			if player.GetByID(i) == ply && !invisibleTbl[i] then
+			if player.GetByID(i) == ply and not invisibleTbl[i] then
 				ply:SetRenderMode(RENDERMODE_TRANSCOLOR)
 				ply:SetColor(inv)
 				ply:EmitSound("AlyxEMP.Charge")
@@ -25,7 +25,7 @@ function goInvisible(ply, distance)
 					ply:PrintMessage(HUD_PRINTTALK, "Du bist wieder sichtbar")
 				end)
 			end
-			if player.GetByID(i) == partner && !invisibleTbl[i] then
+			if player.GetByID(i) == partner and not invisibleTbl[i] then
 				partner:SetRenderMode(RENDERMODE_TRANSCOLOR)
 				partner:SetColor(inv)
 				partner:SetMaterial( "sprites/heatwave" )
@@ -42,45 +42,28 @@ function goInvisible(ply, distance)
 	end
 end
 
-function goProp(ply, distance)
+function GoProp(ply, distance)
 	ply:PrintMessage(HUD_PRINTTALK, "Foo")
 end
 
-function setInvisibleTbl(Players)
+function SetInvisibleTbl(Players)
 	for i = 1, #Players do
 		invisibleTbl[i] = false
 	end
 end
 
-function getInvisibleTblValue(ply)
+function GetInvisibleTblValue(ply)
 	for i = 1, #invisibleTbl do
 
 	end
 end
 
-
-
-function executeAbility(ply, distance)
-	ability = 0 -- Invisibility (TODO: Make multiple of these)
+function ExecuteAbility(ply, distance)
+	local ability = 0 -- Invisibility (TODO: Make multiple of these)
 	if ability == 0 then
-		goInvisible(ply, distance)
+		GoInvisible(ply, distance)
 	end
 end
-
-local requiredDistance = 150
-local invisibleTime = 15
-function goInvisible(ply, distance)
-	if !ply then return end -- Nothing happens
-	if distance > requiredDistance then return end -- Maybe UI-Feedback?
-	for i = 1, #invisibleTbl do
-	end
-
-	partner = getPartner(ply, Partners)
-	timer.Simple(invisibleTime, function()
-
-	end)
-end
-
 
 hook.Add( "KeyPress", "keypressForAction", function( ply, key )
 	if has_enableabilities == 0 then return end -- disable abilities
@@ -88,21 +71,21 @@ hook.Add( "KeyPress", "keypressForAction", function( ply, key )
 	-- use a nice switch-case
 	local switch = {
 		[IN_RELOAD] = function()
-			goProp(ply)
+			GoProp(ply)
 		end,
 		[IN_USE] = function()
 			-- Distance Calc
-			playerPos = ply:GetPos()
-			partner = getPartner(ply, ACTIVEPARTNERS)
-			if !partner then return end
+			local playerPos = ply:GetPos()
+			local partner = GetPartner(ply, ACTIVEPARTNERS)
+			if not partner then return end
 
-			partnerPos = partner:GetPos()
-			distance = math.Distance( playerPos.x, playerPos.y, partnerPos.x, partnerPos.y )
+			local partnerPos = partner:GetPos()
+			local distance = math.Distance( playerPos.x, playerPos.y, partnerPos.x, partnerPos.y )
 
-			executeAbility(ply, distance)
+			ExecuteAbility(ply, distance)
 		end,
 	}
-	
+
 	local action = switch[key]
 	if(action) then
 		action()
