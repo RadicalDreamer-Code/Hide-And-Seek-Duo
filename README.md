@@ -1,5 +1,10 @@
 # Hide-And-Seek-Duo
 
+## Links, Docs and Tools
+- [Gmod Wiki](https://wiki.facepunch.com/gmod/)
+- [Formatter](https://github.com/Koihik/LuaFormatter)
+- [Linter](https://github.com/mpeterv/luacheck)
+
 ## Setup
 
 - add git folder into the Steam Garry's Mod Folder (Steam/garry/garry/addon)
@@ -12,10 +17,6 @@
     - now you should see "Hide and Seek Duo Edition" on the bottom right instead of "Sandbox"
     - klick "Start New Game"
     - select "4 Players" for better testability
-
-## Formatter / Linter
-- [Formatter](https://github.com/Koihik/LuaFormatter)
-- [Linter](https://github.com/mpeterv/luacheck)
 
 ## Ideas
 
