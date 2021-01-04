@@ -1,9 +1,19 @@
 -- Contains all abilities
 
+TeamAbilityTbl = {}
+
 local enableabilties = CreateConVar("has_enableabilities",
 				"1",
 				{FCVAR_REPLICATED,FCVAR_SERVER_CAN_EXECUTE,FCVAR_ARCHIVE},
 				"Allows ablities")
+
+
+
+function setAbilties()
+	-- Get Partner Tbl
+	-- Set for every partnerId a ability
+
+end
 
 
 function goInvisible(ply, distance)
@@ -39,6 +49,12 @@ function goInvisible(ply, distance)
 				end)
 			end
 		end
+	end
+end
+
+function goProp(ply, distance)
+	if distance < 110 then
+
 	end
 end
 
@@ -83,12 +99,11 @@ hook.Add( "KeyPress", "keypressForAction", function( ply, key )
 
 	--partner = getPartner(ply, ACTIVEPARTNERS)
 	if key == IN_USE and partner then
+		if !partner then return end
 		-- Distance Calc
 		playerPos = ply:GetPos()
-
-		if !partner then return end
-
 		partnerPos = partner:GetPos()
+		
 		distance = math.Distance( playerPos.x, playerPos.y, partnerPos.x, partnerPos.y )
 
 		executeAbility(ply, distance)
