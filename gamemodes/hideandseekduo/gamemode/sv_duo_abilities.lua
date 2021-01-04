@@ -42,8 +42,16 @@ function GoInvisible(ply, distance)
     end
 end
 
-function GoProp(ply, distance)
+function GoProp(ply)
+    -- TODO: set the person into third person if possible
     ply:PrintMessage(HUD_PRINTTALK, "Foo")
+    -- get a random entity and change player to that entity
+    local entities = ents.GetAll()
+    local entity = entities[math.random(#entities)]
+    PrintTable(entities)
+    print(entity)
+    -- found in "steamapps\common\GarrysMod\garrysmod\settings\spawnlist_default"
+    ply:SetModel("models/maxofs2d/button_slider.mdl")
 end
 
 function SetInvisibleTbl(Players)
