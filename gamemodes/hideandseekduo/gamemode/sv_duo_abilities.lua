@@ -1,5 +1,7 @@
 -- Contains all abilities
 
+TeamAbilityTbl = {}
+
 local enableabilties = CreateConVar("has_enableabilities",
                 "1",
                 {FCVAR_REPLICATED,FCVAR_SERVER_CAN_EXECUTE,FCVAR_ARCHIVE},
