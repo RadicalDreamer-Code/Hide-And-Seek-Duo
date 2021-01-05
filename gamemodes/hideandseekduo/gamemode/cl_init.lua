@@ -41,8 +41,9 @@ end
 -- net.Receive("abilityData", abilityPlayerData)
 
 local abilityPlayerData = {}
+abilityPlayerData["id"] = 0
 abilityPlayerData["name"] = "Invisibility"
-abilityPlayerData["state"] = 0
+abilityPlayerData["state"] = 0 -- 0 - ready, 1 - active, 2 - used
 abilityPlayerData["time"] = ""
 abilityPlayerData[""] = ""
 
@@ -52,12 +53,22 @@ function PaintHUD()
     -- Ability Display
     if abilityPlayerData == nil then return end
 
-    draw.RoundedBox(1, ScrW() - 210, ScrH() - 50, 200, 40, Color( 0, 0, 0, 200 ))
-    draw.RoundedBox(1, ScrW() - 206, ScrH() - 46, 192, 32, Color(200, 0, 0, 200))
+    draw.RoundedBox(1, ScrW() - 210, ScrH() - 50, 200, 40, Color( 0, 0, 0, 200))
 
+    if abilityPlayerData["state"] == 0 then
+        draw.RoundedBox(1, ScrW() - 206, ScrH() - 46, 192, 32, Color(0, 200, 0, 200))
+    end
+
+    if abilityPlayerData["state"] == 1 then
+        draw.RoundedBox(1, ScrW() - 206, ScrH() - 46, 192, 32, Color(200, 0, 0, 200))
+    end
+
+    if abilityPlayerData["state"] == 2 then
+        draw.RoundedBox(1, ScrW() - 206, ScrH() - 46, 192, 32, Color(200, 0, 0, 200))
+    end
 
     draw.DrawText(tostring(LocalPlayer():Health()), "DermaDefault", 105, ScrH() - 35, color_white, 0)
-    draw.DrawText(abilityPlayerData["name"], "DermaDefault", ScrW() - 140, ScrH() - 40, Color(255,255,255,255), 0)
+    draw.DrawText(abilityPlayerData["name"], "DermaDefault", ScrW() - 140, ScrH() - 38, Color(255,255,255,255), 0)
 end
 
 
