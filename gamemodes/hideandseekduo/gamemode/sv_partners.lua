@@ -2,6 +2,11 @@
 
 PARTNERS = {}
 ACTIVEPARTNERS = {}
+PartnersTbl = {}
+
+local function assignRandomAbilityId()
+    return math.random(0, 2)
+end
 
 --require("abilities")
 --ability = abilities.GetStored("Invisibility")
@@ -36,35 +41,32 @@ function CreateRandomPartner(playerTbl)
     -- Index-Tbl for Randomizer
     PartnersTbl = {}
     local indexTbl = {}
-    local removeTbl = {}
 
+    -- don't let non-hiders get a partner
     for i = 1, #playerTbl do
         if (playerTbl[i]:Team() == 2 or playerTbl[i]:Team() == 3) then
-            table.Add(removeTbl, i)
+            indexTbl[i] = -1
         else
             indexTbl[i] = i
         end
     end
 
-    for i = 1, #removeTbl do
-        table.remove(playerTbl, removeTbl[i])
-    end
-
     local pIndex = 1
-    for i = 1, table.Count(playerTbl) do
+    for i = 1, #playerTbl do
         if (playerTbl[i]:Team() == 1) then
             --net.Start("TargetPartnerRemove")
             --	net.WriteBit(true)
             --net.Send(playerTbl[i])
         end
 
+        print(playerTbl[i]:Name().." "..playerTbl[i]:Team())
         if (playerTbl[i]:Team() ~= 2 and playerTbl[i]:Team() ~= 3) then -- TODO: Check if not Seeker and Spectator!
             -- Random unused number
             local randomNumber = 0
             local randomize = true
             while (randomize) do
                 randomNumber = math.random(#playerTbl)
-                if (indexTbl[randomNumber] ~= 0) then
+                if (indexTbl[randomNumber] ~= 0 and indexTbl[randomNumber] ~= -1) then
                     indexTbl[randomNumber] = 0
                     randomize = false
                 end
@@ -91,6 +93,7 @@ function CreateRandomPartner(playerTbl)
         end
     end
     for i = 1, table.Count(PartnersTbl) do
+        -- notify user about their partner
         for j = 1, table.Count(PartnersTbl[i]) do
             if (j == 1) then
                 if (PartnersTbl[i][2]) then
@@ -98,22 +101,25 @@ function CreateRandomPartner(playerTbl)
                         HUD_PRINTTALK, "Du bist mit " .. PartnersTbl[i][2]:Name().. " in einem Team!"
                     )
                 end
-            else
+            elseif (j == 2) then
                 PartnersTbl[i][j]:PrintMessage(
                         HUD_PRINTTALK, "Du bist mit " .. PartnersTbl[i][1]:Name() .. " in einem Team!"
                 )
             end
         end
+        -- ability assignment
+        PartnersTbl[i]["ability"] = assignRandomAbilityId()
     end
     net.Start("PartnerData")
         net.WriteTable(PartnersTbl)
+    net.Broadcast()
+    net.Start("AbilityState")
+        net.WriteInt(0, 4)
     net.Broadcast()
     --changeVoiceList(PartnersTbl)
     PrintTable(PartnersTbl)
     return PartnersTbl
 end
-
-
 
 function removeFromPartner(ply)
     for i = 1, #ACTIVEPARTNERS do

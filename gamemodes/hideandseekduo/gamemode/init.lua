@@ -30,6 +30,7 @@ end
 -- Pool network names
 util.AddNetworkString("PartnerData")
 util.AddNetworkString("TargetPartnerRemove")
+util.AddNetworkString("AbilityState")
 
 -- Mark Partner
 -- TODO: Leaderboard for duo-teams
@@ -48,7 +49,7 @@ hook.Add("HASRoundStarted", "Duo_Round_Started", function()
     else
         ACTIVEPARTNERS = PARTNERS
     end
-    --SetInvisibleTbl(player.GetAll())
+    SetInvisibleTbl(player.GetAll())
 end)
 
 

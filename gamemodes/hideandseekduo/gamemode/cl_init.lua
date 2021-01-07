@@ -2,6 +2,7 @@ DeriveGamemode("hideandseek")
 
 local targetPartner = nil
 local Partners = {}
+local abilityId = nil
 
 function GotTable(len, Player)
     print("Incoming")
@@ -15,6 +16,7 @@ function GotTable(len, Player)
             for j = 1, #Partners[i] do
                 if Partners[i][j] == me then
                     found = true
+                    abilityId = Partners[i]["ability"]
                     if j == 1 then
                         targetPartner = Partners[i][2]
                     else
@@ -35,43 +37,65 @@ function GotTable(len, Player)
 end
 
 -- Ability Name
--- Cooldown
--- Useable/?MateNotInRange?/Used/Active
+ABILITY_STATE_READY = 0
+ABILITY_STATE_ACTIVE = 1
+ABILITY_STATE_USED = 2
 
--- net.Receive("abilityData", abilityPlayerData)
+local AbilityTbl = {
+    [1] = {
+        ["id"] = 0,
+        ["name"] = "Invisibilty",
+        ["duration"] = 15,
+        ["cooldown"] = 120,
+    },
+    [2] = {
+        ["id"] = 1,
+        ["name"] = "Prop Transformation",
+        ["duration"] = 15,
+        ["cooldown"] = 120,
+    },
+    [3] = {
+        ["id"] = 2,
+        ["name"] = "Fake Runner",
+        ["duration"] = 15,
+        ["cooldown"] = 120,
+    },
+}
 
-local abilityPlayerData = {}
-abilityPlayerData["id"] = 0
-abilityPlayerData["name"] = "Invisibility"
-abilityPlayerData["state"] = 0 -- 0 - ready, 1 - active, 2 - used
-abilityPlayerData["time"] = ""
-abilityPlayerData[""] = ""
+local abilityState = ABILITY_STATE_READY
 
-
+function setAbilityState(len, play)
+    print("Wuuuuuh")
+    abilityState = net.ReadInt(4)
+end
+net.Receive("AbilityState", setAbilityState)
 
 function PaintHUD()
+    if Partners == nil or targetPartner == nil then return end
+
+    -- TODO: Make bigger
+    draw.DrawText("Your buddy is: "..targetPartner:Name(), "DermaDefault", ScrW() - 210, ScrH() - 90, Color(255,255,255,255), TEXT_ALIGN_LEFT)
+
     -- Ability Display
-    if abilityPlayerData == nil then return end
 
     draw.RoundedBox(1, ScrW() - 210, ScrH() - 50, 200, 40, Color( 0, 0, 0, 200))
 
-    if abilityPlayerData["state"] == 0 then
+    if abilityState == ABILITY_STATE_READY then
         draw.RoundedBox(1, ScrW() - 206, ScrH() - 46, 192, 32, Color(0, 200, 0, 200))
     end
 
-    if abilityPlayerData["state"] == 1 then
+    if abilityState == ABILITY_STATE_ACTIVE then
+        draw.RoundedBox(1, ScrW() - 206, ScrH() - 46, 192, 32, Color(200, 200, 0, 200))
+    end
+
+    if abilityState == ABILITY_STATE_USED then
         draw.RoundedBox(1, ScrW() - 206, ScrH() - 46, 192, 32, Color(200, 0, 0, 200))
     end
 
-    if abilityPlayerData["state"] == 2 then
-        draw.RoundedBox(1, ScrW() - 206, ScrH() - 46, 192, 32, Color(200, 0, 0, 200))
-    end
+    if abilityId == nil then return end
 
-    draw.DrawText(tostring(LocalPlayer():Health()), "DermaDefault", 105, ScrH() - 35, color_white, 0)
-    draw.DrawText(abilityPlayerData["name"], "DermaDefault", ScrW() - 140, ScrH() - 38, Color(255,255,255,255), 0)
+    --draw.DrawText(AbilityTbl[abilityId]["name"], "DermaDefault", ScrW() - 140, ScrH() - 38, Color(255,255,255,255), 0)
 end
-
-
 
 net.Receive("PartnerData", GotTable)
 
@@ -82,7 +106,7 @@ end
 net.Receive("TargetPartnerRemove", RemoveTargetPartner)
 
 hook.Add("HUDPaint", "HUDForDuo", function()
-    -- Duo shit --
+    -- Mark Partner with name
     if targetPartner then
         local Position = ( targetPartner:GetPos() + Vector( 0,0,80 ) ):ToScreen()
         draw.DrawText(
@@ -96,7 +120,5 @@ hook.Add("HUDPaint", "HUDForDuo", function()
     end
 
     PaintHUD()
-
-
-    -- Draw Ability-Icons
+    -- TODO: Draw Ability-Icons
 end)

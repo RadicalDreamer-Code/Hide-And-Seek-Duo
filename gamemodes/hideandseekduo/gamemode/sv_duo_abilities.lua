@@ -1,6 +1,13 @@
 -- Contains all abilities
 
 TeamAbilityTbl = {}
+invisibleTbl = {}
+print("Incoming Tbl")
+PrintTable(PartnersTbl)
+
+ABILITY_STATE_READY = 0
+ABILITY_STATE_ACTIVE = 1
+ABILITY_STATE_USED = 2
 
 local enableabilties = CreateConVar("has_enableabilities",
                 "1",
@@ -20,11 +27,18 @@ function GoInvisible(ply, distance)
                 ply:SetMaterial( "sprites/heatwave" )
                 invisibleTbl[i] = true
                 ply:PrintMessage(HUD_PRINTTALK, "Du bist für 15 Sekunden unsichtbar")
+                -- Send Client Ability State
+                net.Start("AbilityState")
+                    net.WriteInt(ABILITY_STATE_ACTIVE, 4)
+                net.Send(ply)
                 timer.Simple(15, function()
                     ply:SetColor(plyColor)
                     --ply:EmitSound("AlyxEMP.Charge")
                     ply:SetMaterial("models/glass")
                     ply:PrintMessage(HUD_PRINTTALK, "Du bist wieder sichtbar")
+                    net.Start("AbilityState")
+                        net.WriteInt(ABILITY_STATE_USED, 4)
+                    net.Send(ply)
                 end)
             end
             if player.GetByID(i) == partner and not invisibleTbl[i] then
