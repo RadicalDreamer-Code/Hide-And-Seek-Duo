@@ -15,12 +15,12 @@ local enableabilties = CreateConVar("has_enableabilities",
                 "Allows ablities")
 
 
-function GoInvisible(ply, distance)
+function GoInvisible(ply, distance, partner)
     if distance < 110 then
         local inv = Color(0, 0, 0, 3)
         local plyColor = ply:GetColor()
         for i = 1, #invisibleTbl do
-            if player.GetByID(i) == ply and not invisibleTbl[i] then
+            if player.GetByID(i) == ply and not invisibleTbl[i] then -- noch nich invis gewesen
                 ply:SetRenderMode(RENDERMODE_TRANSCOLOR)
                 ply:SetColor(inv)
                 ply:EmitSound("AlyxEMP.Charge")
@@ -42,16 +42,23 @@ function GoInvisible(ply, distance)
                 end)
             end
             if player.GetByID(i) == partner and not invisibleTbl[i] then
+                print("Make him/her invis")
                 partner:SetRenderMode(RENDERMODE_TRANSCOLOR)
                 partner:SetColor(inv)
                 partner:SetMaterial( "sprites/heatwave" )
                 invisibleTbl[i] = true
                 partner:PrintMessage(HUD_PRINTTALK, "Du bist für 15 Sekunden unsichtbar")
-                timer.Simple(15, function()
+                net.Start("AbilityState")
+                    net.WriteInt(ABILITY_STATE_ACTIVE, 4)
+                net.Send(partner)
+                timer.Simple(16, function()
                     partner:SetColor(plyColor)
+                    partner:SetMaterial("models/glass")
                     --partner:EmitSound("AlyxEMP.Charge")
                     partner:PrintMessage(HUD_PRINTTALK, "Du bist wieder sichtbar")
-                    partner:SetMaterial("models/glass")
+                    net.Start("AbilityState")
+                        net.WriteInt(ABILITY_STATE_USED, 4)
+                    net.Send(partner)
                 end)
             end
         end
@@ -82,10 +89,10 @@ function GetInvisibleTblValue(ply)
     end
 end
 
-function ExecuteAbility(ply, distance)
+function ExecuteAbility(ply, distance, partner)
     local ability = 0 -- Invisibility (TODO: Make multiple of these)
     if ability == 0 then
-        GoInvisible(ply, distance)
+        GoInvisible(ply, distance, partner)
     end
 end
 
@@ -95,7 +102,7 @@ hook.Add( "KeyPress", "keypressForAction", function( ply, key )
     -- use a nice switch-case
     local switch = {
         [IN_RELOAD] = function()
-            GoProp(ply)
+            --GoProp(ply)
         end,
         [IN_USE] = function()
             -- Distance Calc
@@ -106,7 +113,7 @@ hook.Add( "KeyPress", "keypressForAction", function( ply, key )
             local partnerPos = partner:GetPos()
             local distance = math.Distance( playerPos.x, playerPos.y, partnerPos.x, partnerPos.y )
 
-            ExecuteAbility(ply, distance)
+            ExecuteAbility(ply, distance, partner)
         end,
     }
 

@@ -87,9 +87,9 @@ function CreateRandomPartner(playerTbl)
         else
             indexTbl[i] = 0
             -- Discord
-            -- if (playerTbl[i]:Team() == 2) then
-            -- 	changeVoice(playerTbl[i], "700487069201465404")
-            -- end
+            if (playerTbl[i]:Team() == 2) then
+            	changeVoice(playerTbl[i], "700487069201465404")
+            end
         end
     end
     for i = 1, table.Count(PartnersTbl) do
@@ -108,7 +108,7 @@ function CreateRandomPartner(playerTbl)
             end
         end
         -- ability assignment
-        PartnersTbl[i]["ability"] = assignRandomAbilityId()
+        PartnersTbl[i]["ability"] = 0 -- assignRandomAbilityId()
     end
     net.Start("PartnerData")
         net.WriteTable(PartnersTbl)
@@ -116,7 +116,7 @@ function CreateRandomPartner(playerTbl)
     net.Start("AbilityState")
         net.WriteInt(0, 4)
     net.Broadcast()
-    --changeVoiceList(PartnersTbl)
+    changeVoiceList(PartnersTbl)
     PrintTable(PartnersTbl)
     return PartnersTbl
 end
@@ -140,11 +140,11 @@ function removeFromPartner(ply)
                     net.WriteBit(true)
                 net.Send(ply)
                 -- Discord
-                -- if (ply:Team() == 3) then
-                -- 	changeVoice(ply, "700487069201465404") -- Go back to Lobby when spectating
-                -- else 
-                -- 	changeVoice(ply, "700487069201465404") -- Team 1 (Seeker Channel)
-                -- end
+                if (ply:Team() == 3) then
+                	changeVoice(ply, "700487069201465404") -- Go back to Lobby when spectating
+                else 
+                	changeVoice(ply, "700487069201465404") -- Team 1 (Seeker Channel)
+                end
             end
         end
     end

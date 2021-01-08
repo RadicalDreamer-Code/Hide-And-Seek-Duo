@@ -74,7 +74,7 @@ function PaintHUD()
     if Partners == nil or targetPartner == nil then return end
 
     -- TODO: Make bigger
-    draw.DrawText("Your buddy is: "..targetPartner:Name(), "DermaDefault", ScrW() - 210, ScrH() - 90, Color(255,255,255,255), TEXT_ALIGN_LEFT)
+    draw.DrawText("Your buddy is: "..targetPartner:Name(), "DermaLarge", ScrW() - 410, ScrH() - 90, Color(255,255,255,255), TEXT_ALIGN_LEFT)
 
     -- Ability Display
 
@@ -94,7 +94,7 @@ function PaintHUD()
 
     if abilityId == nil then return end
 
-    --draw.DrawText(AbilityTbl[abilityId]["name"], "DermaDefault", ScrW() - 140, ScrH() - 38, Color(255,255,255,255), 0)
+    draw.DrawText("Push E (Use) for Invisibility", "DermaDefault", ScrW() - 192, ScrH() - 38, Color(255,255,255,255), 0)
 end
 
 net.Receive("PartnerData", GotTable)
